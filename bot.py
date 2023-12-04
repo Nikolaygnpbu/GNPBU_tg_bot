@@ -27,7 +27,7 @@ async def main():
     # Выводим в консоль информацию о начале запуска бота
     logger.info('Starting bot')
 
-#
+
     main_menu_commands = [
         BotCommand(command='/start',
                    description='Старт'),
