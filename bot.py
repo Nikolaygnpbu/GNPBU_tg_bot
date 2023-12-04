@@ -39,7 +39,6 @@ async def main():
         #            description='Другие способы связи')
 
     ]
-
     await bot.set_my_commands(main_menu_commands)
 
     # Регистриуем роутеры в диспетчере
