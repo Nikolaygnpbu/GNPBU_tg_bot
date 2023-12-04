@@ -16,6 +16,7 @@ bot = Bot(token=config.tg_bot.token,
           parse_mode='HTML')
 dp = Dispatcher()
 # Функция конфигурирования и запуска бота
+
 async def main():
     # Конфигурируем логирование
     logging.basicConfig(
