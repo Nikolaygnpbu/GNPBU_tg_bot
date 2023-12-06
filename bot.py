@@ -4,8 +4,9 @@ import logging
 from aiogram import Bot, Dispatcher
 
 from config_data.config import Config, load_config
-from handlers import other_handlers, user_handlers, registration_user_handlers,add_to_repository_handlers
+from handlers import other_handlers, user_handlers, registration_user_handlers, add_to_repository_handlers
 from aiogram.types import BotCommand
+
 # Инициализируем логгер
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,8 @@ config: Config = load_config()
 bot = Bot(token=config.tg_bot.token,
           parse_mode='HTML')
 dp = Dispatcher()
+
+
 # Функция конфигурирования и запуска бота
 
 async def main():
@@ -26,7 +29,6 @@ async def main():
 
     # Выводим в консоль информацию о начале запуска бота
     logger.info('Starting bot')
-
 
     main_menu_commands = [
         BotCommand(command='/start',

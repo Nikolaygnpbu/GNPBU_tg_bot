@@ -1,3 +1,5 @@
+import os
+
 from aiogram import F, Router
 
 from aiogram.filters import Command, StateFilter
@@ -34,6 +36,11 @@ async def process_cancel_command(message: Message):
 # кроме состояния по умолчанию, и отключать машину состояний
 @router.message(Command(commands='cancel'), ~StateFilter(default_state))
 async def process_cancel_command_state(message: Message, state: FSMContext):
+    send_data = await state.get_data()
+    try:
+        os.remove(send_data['get_pdf'])
+    except:
+        print('Нечего удалять, файл небыл прикреплен или сработала другая отмена')
     await message.answer(
         text='Вы отменили ввод данных. Чтобы вернуться в начало нажмите /start', reply_markup=keyboards_start_help)
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
@@ -74,13 +81,16 @@ async def process_name_sent(message: Message, state: FSMContext):
 
 @router.message(StateFilter(FSMFillForm.password))
 async def process_password_sent(message: Message, state: FSMContext):
-    # Cохраняем введенное имя в хранилище по ключу "login"
+    # Cохраняем введенное имя в хранилище по ключу "password"
     await state.update_data(password=message.text)
 
     user_form = await state.get_data()
+    print('user_form', user_form)
     user_id = message.from_user.id
+    print("user_id", user_id)
     await state.clear()
-    reg_data = register_tg_id_to_server.check_user_logpass_repo(user_form, user_id)
+    reg_data = await register_tg_id_to_server.check_user_logpass_repo(user_form, user_id)
+    print("reg_data", type(reg_data))
     if reg_data:
         s = [i for i in reg_data if i]
         await message.answer(

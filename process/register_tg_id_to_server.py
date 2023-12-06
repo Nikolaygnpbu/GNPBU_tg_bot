@@ -1,20 +1,21 @@
-
 import irbis
 from environs import Env
-def check_user_logpass_repo(user_form, user_id):
+
+
+async def check_user_logpass_repo(user_form, user_id):
     # Подключаемся к серверу
     env = Env()
     client = irbis.Connection()
     client.parse_connection_string(f'host={env("IRBIS_SERVER_HOST")};port={env("IRBIS_SERVER_PORT")};' +
-        f'database={env("IRBIS_USER_BASE")};user={env("IRBIS_SERVER_USER")};password={env("IRBIS_SERVER_PASSWORD")};')
+                                   f'database={env("IRBIS_USER_BASE")};user={env("IRBIS_SERVER_USER")};password={env("IRBIS_SERVER_PASSWORD")};')
     client.connect()
-
+    print("check_user_logpass_repo")
     if not client.connected:
         print('Невозможно подключиться!')
         exit(1)
     else:
         print(client)
-    print('user_form = ',user_form)
+    #print('user_form = ', user_form)
     print('user_id', user_id)
     found = client.search_all('"A=$"')
     print(f'Найдено записей: {len(found)}')
@@ -22,7 +23,7 @@ def check_user_logpass_repo(user_form, user_id):
     for mfn in found:
         # Получаем запись из базы данных
         record = client.read_record(mfn)
-        if record.fm(30) == str(user_form['login']) and record.fm(130)==str(user_form['password']):
+        if record.fm(30) == str(user_form['login']) and record.fm(130) == str(user_form['password']):
             # # Извлекаем из записи интересующее нас поле и подполе
             if not record.fm(33):
                 record.add(33, str(user_id))
@@ -44,9 +45,8 @@ def check_user_logpass_repo(user_form, user_id):
         else:
             continue
     client.disconnect()
-    if len(user_data)>1:
+    if len(user_data) > 1:
         print(len(user_data))
         return user_data
     else:
         return False
-

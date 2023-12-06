@@ -264,8 +264,7 @@ async def process_keywords_en_sent(message: Message, state: FSMContext):
     await state.set_state(FSMAddToRepoForm.end_qestion)
 
 
-
-# Отлавливае yes
+# Отлавливаем yes
 @router.callback_query(F.data == '!_send_!', StateFilter(FSMAddToRepoForm.end_qestion))
 async def process_keywords_en_command_yes(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup()
