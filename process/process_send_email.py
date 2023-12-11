@@ -35,8 +35,7 @@ async def send_email_ok(all_data_in_mfn):
 async def send_email_no_ok(all_data_in_mfn):
     env = Env()
 
-    # sender = env('SENDER')
-    # receiver = 'dnv@gnpbu.ru'
+
     obrashenie = ''
     if all_data_in_mfn[23] == 'м':
         obrashenie = 'Уважаемый'
