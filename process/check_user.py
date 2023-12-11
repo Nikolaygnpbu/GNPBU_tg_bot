@@ -33,23 +33,7 @@ async def check_user_repo(id):
             user_data.append(user_lastname)
             user_data.append(user_name)
             user_data.append(user_otchestvo)
-        # for mfn in found:
-        #     # Получаем запись из базы данных
-        #     record = client.read_record(mfn)
-        #     if record.fm(33) == str(id):
-        #         # # Извлекаем из записи интересующее нас поле и подполе
-        #         user_id = record.fm(33)
-        #         print(user_id)
-        #         user_lastname = record.fm(10)
-        #         user_name = record.fm(11)
-        #         user_otchestvo = record.fm(12)
-        #         print('user_id_:', user_id, user_lastname, user_name, user_otchestvo)
-        #         user_data.append(user_id)
-        #         user_data.append(user_lastname)
-        #         user_data.append(user_name)
-        #         user_data.append(user_otchestvo)
-        #     else:
-        #         continue
+
         else:
             return False
     except:

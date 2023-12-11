@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "GNPBU_tg_REPO_bot"
+name = "gnpbu-tg-repo-bot"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -7,6 +7,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+aiogram = "^3.2.0"
+environs = "^9.5.0"
+irbis = "^0.2.376"
+apscheduler = "^3.10.4"
 
 
 [build-system]

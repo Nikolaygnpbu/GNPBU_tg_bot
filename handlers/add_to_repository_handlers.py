@@ -61,7 +61,6 @@ async def process_pdf_sent(message: Message, state: FSMContext):
             file_name = message.document.file_name
             file_path = file.file_path
             await bot.bot.download_file(file_path, file_name)
-            print(message.document.file_size)
             await state.update_data(get_pdf=message.document.file_name)  # Сохраняем только имя файла
             await message.answer(text=f'Спасибо!\nФайл "{file_name}" принят.\n\n'
                                       f'Введите ФИО автора\n\nв формате - Фамилия Имя Отчество\n\n'
