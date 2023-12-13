@@ -3,7 +3,6 @@ from aiogram import F, Router, types
 from environs import Env
 from aiogram.types import (CallbackQuery, Message)
 from random import *
-
 import process.process_send_email
 
 router = Router()

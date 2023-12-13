@@ -1,12 +1,9 @@
 import os
-
 from aiogram import F, Router
-
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
 from aiogram.types import (CallbackQuery, Message)
-
 from process import register_tg_id_to_server
 from lexicon.lexicon_ru import LEXICON_RU
 from keyboards.keyboards import keyboards_start_help

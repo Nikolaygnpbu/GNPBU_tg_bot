@@ -26,6 +26,8 @@ async def serch_new_users():
             if record.fm(12) != None:
                 unreg_users_dict.append(record.fm(12))
             unreg_users_dict.append(record.fm(32))
+            if record.fm(16) != None:
+                unreg_users_dict.append(record.fm(16))
             unreg_users_dict.append(mfn)
             unreg_users_dicts_list.append(unreg_users_dict)
 
@@ -34,11 +36,8 @@ async def serch_new_users():
 
 async def send_message_to_admins_group(unreg_users):
     env = Env()
-    print(unreg_users)
     if unreg_users:
-        print()
         for i in unreg_users:
-            print(i)
             button_add_user = InlineKeyboardButton(
                 text='Добавить',
                 callback_data=f'!_ye_add_!{i[-1]}'

@@ -9,14 +9,13 @@ async def check_user_logpass_repo(user_form, user_id):
     client.parse_connection_string(f'host={env("IRBIS_SERVER_HOST")};port={env("IRBIS_SERVER_PORT")};' +
                                    f'database={env("IRBIS_USER_BASE")};user={env("IRBIS_SERVER_USER")};password={env("IRBIS_SERVER_PASSWORD")};')
     client.connect()
-    print("check_user_logpass_repo")
+
     if not client.connected:
         print('Невозможно подключиться!')
         exit(1)
     else:
         print(client)
-    #print('user_form = ', user_form)
-    print('user_id', user_id)
+
     found = client.search_all('"A=$"')
     print(f'Найдено записей: {len(found)}')
     user_data = []

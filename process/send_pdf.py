@@ -32,6 +32,7 @@ async def process_send_pdf(file_name):
 async def process_verify_pdf_on_server(file_name):
     for root, dirs, files in os.walk('\\\\REPO-RAO\\texts'):  # //192.168.111.232/irbis64/Datai/REPO/texts
         if root == '\\\\REPO-RAO\\texts':  # //192.168.111.232/irbis64/Datai/REPO/texts
+            print('file_name =', file_name)
             for filename in files:
                 if filename==file_name:
                     return True

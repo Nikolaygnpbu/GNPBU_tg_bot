@@ -35,8 +35,10 @@ async def check_user_repo(id):
             user_data.append(user_otchestvo)
 
         else:
+            client.disconnect()
             return False
     except:
+        client.disconnect()
         return False
     client.disconnect()
     if len(user_data) > 1:

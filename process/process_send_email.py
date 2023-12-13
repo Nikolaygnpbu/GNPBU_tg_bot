@@ -51,7 +51,6 @@ async def send_email_no_ok(all_data_in_mfn):
     msg['To'] = all_data_in_mfn[32]
     user = env('USER')
     password = env("PASSWORD")
-    # sent_from = env("SENT_FROM")
     sent_to = all_data_in_mfn[32]
     s = smtplib.SMTP_SSL(env("SMTP_SERVER"), int(env("SSL_PORT")), timeout=10)
     s.set_debuglevel(1)

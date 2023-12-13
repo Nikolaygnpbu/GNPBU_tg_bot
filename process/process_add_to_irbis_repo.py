@@ -124,13 +124,17 @@ async def record_to_repo(all_data) -> str:
                 record.add(610, (all_data['keywords_en'].strip()))
         except:
             pass
-        print("annotation_en")
+        print("annotation_en = ", all_data['abstract'])
+
         try:  # Пробуем аннотацию на иностранном языке
-            annot_en = all_data['annotation_en']
+            annot_en = all_data['abstract']
+            annot_en = annot_en.replace('\n', ' ')
             record.add(331, annot_en)
         except:
             pass
-        record.add(331, (all_data['annotation']))
+        annotation = all_data['annotation']
+        annotation = annotation.replace('\n', ' ')
+        record.add(331, annotation)
         record.add(182, SF('A', 'n'))
         record.add(203) \
             .add('a', 'Текст') \
@@ -140,6 +144,9 @@ async def record_to_repo(all_data) -> str:
         # Отправляем запись на сервер
         # Запись попадёт в текущую базу данных
         client.write_record(record)
+        info = client.get_database_info(env("IRBIS_REPO_BASE"))
+        last_mfn = info.max_mfn - 1
+        print(f"Последний mfn: {last_mfn}")
     time.sleep(
         1)  # Добавлена пауза, так как Ирбис слишком медленно думает и выдает ошибочный номер max_mfn = -1, если добавлять без пауз
     info = client.get_database_info(env("IRBIS_REPO_BASE"))
