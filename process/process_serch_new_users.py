@@ -46,6 +46,10 @@ async def send_message_to_admins_group(unreg_users):
                 text='Отклонить',
                 callback_data=f'!_no_add_!{i[-1]}'
             )
-            keyboards_add_no_user = InlineKeyboardMarkup(inline_keyboard=[[button_add_user, button_no_add_user]])
+            button_del_user_without_email = InlineKeyboardButton(
+                text='Удалить без отправки email',
+                callback_data=f'!_no_mil_!{i[-1]}'
+            )
+            keyboards_add_no_user = InlineKeyboardMarkup(inline_keyboard=[[button_add_user, button_no_add_user], [button_del_user_without_email]])
             await bot.bot.send_message(env("GROUP_TG_ADMINS"), text=f"{', '.join(i[:-1])}",reply_markup=keyboards_add_no_user)
 

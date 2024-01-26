@@ -14,7 +14,7 @@ async def send_email_ok(all_data_in_mfn):
     msg = MIMEText(
         f'{obrashenie} {all_data_in_mfn[10]} {all_data_in_mfn[11]}!\nВы зарегистрированы в Репозитории РАО. Для входа в систему используйте следующие данные:\n'
         f'Логин: {all_data_in_mfn[30]}\n'
-        f'Пароль:{all_data_in_mfn[130]}\n\n'
+        f'Пароль: {all_data_in_mfn[130]}\n\n'
         f'-------\n'
         f'Репозиторий РАО', 'plain', 'utf-8')
     msg['Subject'] = Header('Регистрация в репозитории РАО', 'utf-8')

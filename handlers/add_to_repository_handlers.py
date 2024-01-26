@@ -135,7 +135,9 @@ async def warning_not_author(message: Message):
 @router.message(StateFilter(FSMAddToRepoForm.zaglavie))
 async def process_zaglavie_sent(message: Message, state: FSMContext):
     # Cохраняем введенное имя в хранилище по ключу "zaglavie"
-    await state.update_data(zaglavie=message.text)
+    zaglavie = message.text
+    zaglavie = zaglavie.replace('\n', ' ')
+    await state.update_data(zaglavie=zaglavie)
     await message.answer(text='Спасибо!\n\nВыберите тип публикации', reply_markup=keyboards_type_pub)
     await state.set_state(FSMAddToRepoForm.typ_pub)
     print(await state.get_data())
@@ -154,7 +156,7 @@ async def process_type_pub_sent(callback: CallbackQuery, state: FSMContext):
 async def process_year_sent(message: Message, state: FSMContext):
     if await check_fsm_data.check_year(message.text):
         await state.update_data(year=message.text)
-        await message.answer(text='Спасибо!\n\nВведите аннотацию')
+        await message.answer(text='Спасибо!\n\nВведите аннотацию\nНе более 4000 символов')
         # Устанавливаем состояние ожидания ввода типа публикации
         await state.set_state(FSMAddToRepoForm.annotation)
     else:
@@ -171,6 +173,8 @@ async def warning_year_sent(message: Message):
 @router.message(StateFilter(FSMAddToRepoForm.annotation))
 async def process_annotation_sent(message: Message, state: FSMContext):
     # Cохраняем введенное имя в хранилище по ключу "annotation"
+    # annotation_data = ''
+    # annotation_data = annotation_data + message.text
     await state.update_data(annotation=message.text)
     await message.answer(text='Спасибо!\n\nА теперь введите ключевые слова, разделенные запятой')
     await state.set_state(FSMAddToRepoForm.keywords)
@@ -180,7 +184,9 @@ async def process_annotation_sent(message: Message, state: FSMContext):
 @router.message(StateFilter(FSMAddToRepoForm.keywords))
 async def process_abstract_sent(message: Message, state: FSMContext):
     # Cохраняем введенное имя в хранилище по ключу "keywords"
-    await state.update_data(keywords=message.text)
+    keywords = message.text
+    keywords = keywords.replace('\n', ' ')
+    await state.update_data(keywords=keywords)
     await message.answer(text='Спасибо!\n\nПланируете указать аннотацию на иностранном языке? (Abstract)',
                          reply_markup=keyboards_yes_no)
     # Устанавливаем состояние ожидания ввода типа публикации
@@ -233,9 +239,9 @@ async def process_keywords_en_command_no(callback: CallbackQuery, state: FSMCont
                                           f'Заглавие - {all_data["zaglavie"]}\n'
                                           f'Тип публикации - {public_types_list[int(all_data["typ_pub"])]}\n'
                                           f'Год издания - {all_data["year"]}\n'
-                                          f'Аннотация - {all_data["annotation"]}\n'
-                                          f'Ключевые слова - {all_data["keywords"]}\n'
-                                          f'ABSTRACT - {await check_fsm_data.check_print_abstract(all_data)}\n'
+                                          f'Аннотация (первые 200 миволов) - {all_data["annotation"][:200]}\n'
+                                          f'Ключевые слова - {all_data["keywords"][:200]}\n'
+                                          f'ABSTRACT (первые 200 миволов) - {await check_fsm_data.check_print_abstract(all_data)}\n'
                                           f'KEYWORDS - {await check_fsm_data.check_print_keywords_en(all_data)}\n'
                                           f'Название файла - {all_data["get_pdf"]}'
                                           f'\n\n'
@@ -245,6 +251,8 @@ async def process_keywords_en_command_no(callback: CallbackQuery, state: FSMCont
 
 @router.message(StateFilter(FSMAddToRepoForm.keywords_en_answere))
 async def process_keywords_en_sent(message: Message, state: FSMContext):
+    keywords_en = message.text
+    keywords_en = keywords_en.replace('\n', ' ')
     await state.update_data(keywords_en=message.text)
     all_data = await state.get_data()
     await message.answer(text=f'Спасибо!\n\nПроверьте введенные данные\n'

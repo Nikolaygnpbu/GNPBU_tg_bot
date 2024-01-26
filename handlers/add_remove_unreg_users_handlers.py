@@ -92,6 +92,37 @@ async def callback_unreg_users(callback: CallbackQuery):
             await callback.message.edit_text(
                 text=f"{callback.message.text}\nНе правильно указана электронная почта, запись удална")
             client.disconnect()
+    if callback.data[:9] == '!_no_mil_':
+        print('no_mil')
+        all_data_in_mfn = {}
+        client = irbis.Connection()
+        client.parse_connection_string(f'host={env("IRBIS_SERVER_HOST")};port={env("IRBIS_SERVER_PORT")};' +
+                                       f'database={env("IRBIS_RDRV_BASE")};user={env("IRBIS_SERVER_USER")};password={env("IRBIS_SERVER_PASSWORD")};')
+        client.connect()
+        if not client.connected:
+            print('Невозможно подключиться!')
+            exit(1)
+        else:
+            print(client)
+        record = client.read_record(int(callback.data[10:]))
+        print('record')
+        if check_email(record.fm(32)):
+            all_data_in_mfn.setdefault(10, record.fm(10))
+            all_data_in_mfn.setdefault(11, record.fm(11))
+            all_data_in_mfn.setdefault(23, record.fm(23))
+            all_data_in_mfn.setdefault(18, record.fm(18))
+            all_data_in_mfn.setdefault(32, record.fm(32))
+            client.delete_record(int(callback.data[10:]))  # Удаляем запись
+
+            await callback.message.edit_reply_markup()
+            await callback.message.edit_text(text=f"{callback.message.text} удален без отправки email")
+            client.disconnect()
+        else:
+            await callback.message.edit_reply_markup()
+            client.delete_record(int(callback.data[10:]))  # Удаляем запись
+            await callback.message.edit_text(
+                text=f"{callback.message.text}\nНе правильно указана электронная почта, запись удална")
+            client.disconnect()
 def check_email(mail):
     try:
         if mail.index('@') > -1 and mail[mail.index('@'):].index('.'):

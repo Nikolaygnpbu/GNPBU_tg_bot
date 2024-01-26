@@ -109,7 +109,8 @@ async def record_to_repo(all_data) -> str:
             .add('a', pole_955)  # \
 
         try:  # если несколько ключевых слов, пробуем разделить по ","
-            keyboards_in_all_data = all_data['keywords'].split(',')
+            keyboards_in_all_data = all_data['keywords'].replace('\n', ' ')
+            keyboards_in_all_data = keyboards_in_all_data.split(',')
             for keyword in keyboards_in_all_data:
                 record.add(610, (keyword.strip()))
         except:
@@ -117,14 +118,14 @@ async def record_to_repo(all_data) -> str:
         print("keywords_en")
         try:  # Проверяем на наличие аннотации на иностранном языке
             try:  # если несколько ключевых слов На иностранном языке, пробуем разделить по ","
-                keyboards_in_all_data = all_data['keywords_en'].split(',')
+                keyboards_in_all_data = all_data['keywords_en'].replace('\n', ' ')
+                keyboards_in_all_data = keyboards_in_all_data.split(',')
                 for keyword in keyboards_in_all_data:
                     record.add(610, (keyword.strip()))
             except:
                 record.add(610, (all_data['keywords_en'].strip()))
         except:
             pass
-        print("annotation_en = ", all_data['abstract'])
 
         try:  # Пробуем аннотацию на иностранном языке
             annot_en = all_data['abstract']
