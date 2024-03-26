@@ -63,7 +63,7 @@ async def process_pdf_sent(message: Message, state: FSMContext):
             await bot.bot.download_file(file_path, file_name)
             await state.update_data(get_pdf=message.document.file_name)  # Сохраняем только имя файла
             await message.answer(text=f'Спасибо!\nФайл "{file_name}" принят.\n\n'
-                                      f'Введите ФИО автора\n\nв формате - Фамилия Имя Отчество\n\n'
+                                      f'Введите ФИО первого автора\n\nв формате - Фамилия Имя Отчество\n\n'
                                       f'Инициалы не принимаются\n\nКоманда /cancel для остановки процесса ввода данных')
             await state.set_state(FSMAddToRepoForm.author)
         else:
@@ -100,7 +100,7 @@ async def process_author1_sent(message: Message, state: FSMContext):
 @router.callback_query(F.data == '!_yes_!', StateFilter(FSMAddToRepoForm.author_question))
 async def process_author_question_command_yes(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup()
-    await callback.message.edit_text(text='Спасибо!\n\nА теперь введите авторов через запятую')
+    await callback.message.edit_text(text='Спасибо!\n\nА теперь введите соавторов через запятую')
     await state.set_state(FSMAddToRepoForm.authors)
 
 
@@ -198,7 +198,7 @@ async def process_abstract_sent(message: Message, state: FSMContext):
 @router.callback_query(F.data == '!_yes_!', StateFilter(FSMAddToRepoForm.abstract))
 async def process_abstract_command_yes(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup()
-    await callback.message.edit_text(text='Спасибо!\n\nА теперь введите аннотацию на иностранном языке')
+    await callback.message.edit_text(text='Спасибо!\n\nА теперь введите аннотацию на иностранном языке\nНе более 4000 символов')
     await state.set_state(FSMAddToRepoForm.keywords_en_question)
 
 
@@ -253,7 +253,7 @@ async def process_keywords_en_command_no(callback: CallbackQuery, state: FSMCont
 async def process_keywords_en_sent(message: Message, state: FSMContext):
     keywords_en = message.text
     keywords_en = keywords_en.replace('\n', ' ')
-    await state.update_data(keywords_en=message.text)
+    await state.update_data(keywords_en=keywords_en)
     all_data = await state.get_data()
     await message.answer(text=f'Спасибо!\n\nПроверьте введенные данные\n'
                               f'Автор - {all_data["author"]}\n'

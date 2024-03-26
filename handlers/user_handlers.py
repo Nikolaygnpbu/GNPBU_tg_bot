@@ -1,13 +1,19 @@
+from datetime import datetime
+
 from aiogram import Router, types
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message
+from aiogram.filters.callback_data import CallbackData
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
+import aiogram_calendar
 import process.process_get_statistics
 from process import check_user
-from keyboards.keyboards import keyboard_to_reg, keyboards_start_help, keyboard_add_new_data
+from keyboards.keyboards import keyboard_to_reg, keyboards_start_help, keyboard_add_new_data, keyboards_statistics
 
 from lexicon.lexicon_ru import LEXICON_RU
+from aiogram_calendar import DialogCalendar, SimpleCalendar, DialogCalendarCallback, get_user_locale, \
+    SimpleCalendarCallback
 
 router = Router()
 
@@ -34,5 +40,11 @@ async def process_help_command(message: Message):
 @router.message(Command(commands='statistics'))
 async def process_help_command(message: Message):
     keyboard_to_delete = types.ReplyKeyboardRemove() # удаляем кнопки Replykeyboard
-    stata = await process.process_get_statistics.get_statistics()
-    await message.answer(text=stata, reply_markup=keyboard_to_delete)
+    await message.answer(text='Статистика', reply_markup=keyboard_to_delete)
+    await message.answer(text='Получить статистику', reply_markup=keyboards_statistics)
+
+    #stata = await process.process_get_statistics.get_statistics()
+
+    #await message.answer("Выбери дату начиная с года: ", reply_markup=await SimpleCalendar().start_calendar())
+    #await message.answer(text=stata, reply_markup=keyboard_to_delete)
+

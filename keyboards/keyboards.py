@@ -102,3 +102,18 @@ button_no_send = InlineKeyboardButton(
 )
 keyboards_send_yes_no = InlineKeyboardMarkup(inline_keyboard=[[button_send, button_no_send]])
 
+button_mini_stat = InlineKeyboardButton(
+    text='Получить общие данные',
+    callback_data='!_get_mini_stat_!'
+)
+button_max_stat = InlineKeyboardButton(
+    text='Данные за период',
+    callback_data='!_get_maxi_stat_!'
+)
+keyboards_statistics = InlineKeyboardMarkup(inline_keyboard=[[button_mini_stat, button_max_stat]])
+
+button_nachalo_date_stat = InlineKeyboardButton(
+    text='Выбрать дату на начало',
+    callback_data='!_get_nachalo_data_stat_!'
+)
+keyboards_date_nachalo = InlineKeyboardMarkup(inline_keyboard=[[button_nachalo_date_stat]])

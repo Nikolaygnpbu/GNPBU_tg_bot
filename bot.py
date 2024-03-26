@@ -4,7 +4,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher
 from config_data.config import Config, load_config
 from handlers import other_handlers, user_handlers, registration_user_handlers, add_to_repository_handlers, \
-    add_remove_unreg_users_handlers
+    add_remove_unreg_users_handlers, get_statistics
 from process import process_serch_new_users
 from aiogram.types import BotCommand
 import datetime
@@ -46,6 +46,7 @@ async def main():
 
     # Регистриуем роутеры в диспетчере
     dp.include_router(user_handlers.router)
+    dp.include_router(get_statistics.router)
     dp.include_router(registration_user_handlers.router)
     dp.include_router(add_to_repository_handlers.router)
     dp.include_router(add_remove_unreg_users_handlers.router)
