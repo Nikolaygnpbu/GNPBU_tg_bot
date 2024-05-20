@@ -6,7 +6,7 @@ from aiogram_calendar import SimpleCalendarCallback, SimpleCalendar, get_user_lo
 import bot
 from aiogram import F, Router, types
 import process
-from process import process_get_maxi_statistics
+from process import process_get_maxi_statistics, process_get_excel_statistics
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state, State, StatesGroup
@@ -27,6 +27,13 @@ from aiogram.types import InputFile
 router = Router()
 env = Env()
 class FSMGetMaxStatisticsForm(StatesGroup):
+    # Создаем экземпляры класса State, последовательно
+    # перечисляя возможные состояния, в которых будет находиться
+    # бот в разные моменты взаимодейтсвия с пользователем
+    date_nachalo = State()
+    date_konec = State()
+
+class FSMGetExcelStatisticsForm(StatesGroup):
     # Создаем экземпляры класса State, последовательно
     # перечисляя возможные состояния, в которых будет находиться
     # бот в разные моменты взаимодейтсвия с пользователем
@@ -96,6 +103,71 @@ async def process_simple_calendar_konec(callback_query: CallbackQuery, callback_
             for i in stata:
                 file.write(f'{i}\n')
         document = FSInputFile('statistics.txt')
+        await bot.bot.send_document(env("GROUP_TG_ADMINS"), document)
+
+
+        await state.clear()
+
+
+@router.callback_query(F.data == '!_get_excel_stat_!', StateFilter(default_state))
+async def process_stat_excel_init(callback: CallbackQuery, state: FSMContext):
+    keyboard_to_delete = types.ReplyKeyboardRemove()  # Удаление Репли кнопок
+    await callback.message.edit_text(text='Статистика за период в формате EXCEL\nДля отмены воспользуйтесь командой /cancel')
+    # Устанавливаем состояние ожидания ввода имени
+    #await callback.answer()
+    await callback.message.edit_text("EXCEL\nВыберите дату на начало периода\n❗По порядку - год, месяц, день❗\nДля отмены воспользуйтесь командой /cancel", reply_markup=await SimpleCalendar().start_calendar())
+    await state.set_state(FSMGetExcelStatisticsForm.date_nachalo)
+
+
+
+@router.callback_query(SimpleCalendarCallback.filter(), StateFilter(FSMGetExcelStatisticsForm.date_nachalo))
+async def process_stat_excel_start(callback_query: CallbackQuery, callback_data: CallbackData, state: FSMContext):
+    print(callback_query.data)
+    print(type(callback_query.data))
+
+    calendar = SimpleCalendar(
+        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+    )
+    # calendar.set_dates_range(datetime(2022, 1, 1), datetime(2025, 12, 31))
+    selected, date = await calendar.process_selection(callback_query, callback_data)
+    if selected:
+        await state.update_data(date_nachalo=date)
+        print(date)
+        await callback_query.message.edit_text(
+            f'Дата на начало периода: {date.strftime("%d.%m.%Y")}')
+        await state.set_state(FSMGetExcelStatisticsForm.date_konec)
+        await callback_query.message.answer(
+            f'EXCEL\nОтлично! Теперь выберем дату на конец периода\n❗По порядку - год, месяц, день❗\nДля отмены воспользуйтесь командой /cancel', reply_markup=await SimpleCalendar().start_calendar())
+
+
+@router.callback_query(SimpleCalendarCallback.filter(), StateFilter(FSMGetExcelStatisticsForm.date_konec))
+async def process_stat_excel_finish(callback_query: CallbackQuery, callback_data: CallbackData, state: FSMContext):
+    calendar = SimpleCalendar(
+        locale=await get_user_locale(callback_query.from_user), show_alerts=True
+    )
+    # calendar.set_dates_range(datetime(2022, 1, 1), datetime(2025, 12, 31))
+    selected, date = await calendar.process_selection(callback_query, callback_data)
+    if selected:
+        await state.update_data(date_konec=date)
+        await callback_query.message.edit_text(
+            f'Дата на конец периода: {date.strftime("%d.%m.%Y")}')
+
+        print(await state.get_data())
+        stast_data = await state.get_data()
+        await callback_query.message.edit_text(text='Идет просчет... Ждите.')
+        await process_get_excel_statistics.get_excel_statistics(stast_data['date_nachalo'], stast_data['date_konec'])
+
+        await callback_query.message.edit_text(text=f"Дата на конец периода: {date.strftime('%d.%m.%Y')}")
+
+        # with open('statistics.txt', 'w', encoding='utf-8') as file:
+        #     file.write(f"{datetime.datetime.strftime(stast_data['date_nachalo'], '%d.%m.%Y')} - {datetime.datetime.strftime(stast_data['date_konec'], '%d.%m.%Y')}\n")
+        #     file.write(f"Количество записей =  {count}\n")
+        #
+        #     for i in stata:
+        #         file.write(f'{i}\n')
+
+
+        document = FSInputFile('statistics.xlsx')
         await bot.bot.send_document(env("GROUP_TG_ADMINS"), document)
 
 

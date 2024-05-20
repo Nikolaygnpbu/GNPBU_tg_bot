@@ -110,7 +110,11 @@ button_max_stat = InlineKeyboardButton(
     text='Данные за период',
     callback_data='!_get_maxi_stat_!'
 )
-keyboards_statistics = InlineKeyboardMarkup(inline_keyboard=[[button_mini_stat, button_max_stat]])
+button_excel_stat = InlineKeyboardButton(
+    text='Данные в EXCEL',
+    callback_data='!_get_excel_stat_!'
+)
+keyboards_statistics = InlineKeyboardMarkup(inline_keyboard=[[button_mini_stat, button_max_stat],[button_excel_stat]])
 
 button_nachalo_date_stat = InlineKeyboardButton(
     text='Выбрать дату на начало',

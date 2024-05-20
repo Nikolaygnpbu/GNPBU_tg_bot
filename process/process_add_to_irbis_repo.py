@@ -127,21 +127,20 @@ async def record_to_repo(all_data) -> str:
         except:
             pass
 
+        annotation = all_data['annotation']
+        annotation = annotation.replace('\n', ' ')
+        record.add(331, annotation)
         try:  # Пробуем аннотацию на иностранном языке
             annot_en = all_data['abstract']
             annot_en = annot_en.replace('\n', ' ')
             record.add(331, annot_en)
         except:
             pass
-        annotation = all_data['annotation']
-        annotation = annotation.replace('\n', ' ')
-        record.add(331, annotation)
         record.add(182, SF('A', 'n'))
         record.add(203) \
             .add('a', 'Текст') \
             .add('C', 'непосредственный')
 
-        print('fas')
         # Отправляем запись на сервер
         # Запись попадёт в текущую базу данных
         client.write_record(record)
