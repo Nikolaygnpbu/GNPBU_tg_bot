@@ -108,7 +108,7 @@ async def process_author_question_command_yes(callback: CallbackQuery, state: FS
 @router.callback_query(F.data == '!_no_!', StateFilter(FSMAddToRepoForm.author_question))
 async def process_author_question_command_no(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup()
-    await callback.message.edit_text(text='Спасибо!\n\nВведите заглавие')
+    await callback.message.edit_text(text='Спасибо!\n\nВведите библиографическое описание (название публикации, место издания, №, страницы, DOI и т.д.)')
     await state.set_state(FSMAddToRepoForm.zaglavie)
 
 

@@ -105,6 +105,10 @@ async def record_to_repo(all_data) -> str:
             .add('K', 'PSBO')
         record.add(905, SF('2', '1'))
         file_name = all_data['get_pdf']
+
+        # pole_955 =pole_955.replace('й', 'й') #Это не простые й ё, тут составные символы, которые пприлетели от сотрудника. Видимо выбрана не та кодировка
+        # pole_955 =pole_955.replace('ё', 'ё')# Чтоб не воняли сотрудники, меняем на нормальные символы
+
         record.add(955) \
             .add('a', pole_955)  # \
 

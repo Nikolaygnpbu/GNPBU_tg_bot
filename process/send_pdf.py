@@ -25,6 +25,8 @@ async def process_send_pdf(file_name):
     #os.rename(file_name, f"{file_destination}\\{out_file_name}")
     print("rename")
     print('out_file_name', out_file_name)
+    out_file_name = out_file_name.replace('й', 'й')  # Это не простые й ё, тут составные символы, которые пприлетели от сотрудника. Видимо выбрана не та кодировка
+    out_file_name = out_file_name.replace('ё', 'ё')  # Чтоб не воняли сотрудники, меняем на нормальные символы
     shutil.copy2(f'{file_name}', f'\\\\REPO-RAO\\texts\\{out_file_name}')
     print('send')
     os.remove(file_name)
